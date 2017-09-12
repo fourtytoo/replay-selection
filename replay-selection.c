@@ -18,8 +18,8 @@ along with this program; see the file COPYING.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.*/
 
-/* Replay in X events the contents of the clipboard (the selected
-    text, if you will).  For this program to work you need xsel and
+/* Replay the contents of the clipboard (the selected text, if you
+    will) as X11 events.  For this program to work you need xclip and
     xte (in xautomation) installed.
 
     You are supposed to bind this command to a special key of your
