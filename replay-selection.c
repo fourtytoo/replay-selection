@@ -117,6 +117,7 @@ use_external_programs ()
 {
   FILE *fp = spawn_source();
   replay_clipboard(fp);
+  fclose(fp);
 }
 
 int
