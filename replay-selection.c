@@ -36,7 +36,7 @@ Boston, MA 02111-1307, USA.*/
 #include <sys/wait.h>
 
 
-FILE *
+static FILE *
 spawn_source ()
 {
   int     fd[2];
