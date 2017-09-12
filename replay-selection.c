@@ -54,6 +54,7 @@ spawn_source ()
       close(fd[0]);
       dup2(fd[1], 1);
       execlp("xclip", "xclip", "-o", NULL);
+      perror("execlp");
       exit(-1);
     }
   else if (pid > 0)
@@ -67,12 +68,11 @@ spawn_source ()
 }
 
 static void
-replay_line (char *line, size_t len)
+exec_xte (char *line, size_t len)
 {
   char *arg1, *arg2;
   size_t arg1len;
   static char str[] = "str ";
-  int pid;
 
   arg1len = len + sizeof(str);
   arg1 = malloc(arg1len);
@@ -80,24 +80,35 @@ replay_line (char *line, size_t len)
   strcpy(arg1 + sizeof(str) - 1, line);
   arg1[arg1len - 1] = '\0';
 
-  pid = fork();
-  if (pid == 0)
+  if (arg1[arg1len - 2] == '\n')
     {
-      if (arg1[arg1len - 2] == '\n')
-	{
-	  arg1[arg1len - 2] = '\0';
-	  arg2 = "key Return";
-	}
-      else
-	arg2 = NULL;
-      execlp("xte", "xte", arg1, arg2, NULL);
+      arg1[arg1len - 2] = '\0';
+      arg2 = "key Return";
     }
+  else
+    arg2 = NULL;
+  execlp("xte", "xte", arg1, arg2, NULL);
+  perror("execlp");
+  exit(-1);
+}
+
+static void
+replay_line (char *line, size_t len)
+{
+  int pid = fork();
+
+  if (pid == 0)
+    exec_xte(line, len);
   else if (pid > 0)
     {
       int status;
       waitpid(pid, &status, 0);
     }
-  free(arg1);
+  else
+    {
+      perror("fork");
+      exit(-1);
+    }
 }
 
 static void
